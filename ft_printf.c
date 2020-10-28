@@ -16,6 +16,7 @@ void			init_info(t_info *info)
 {
 	info->left_align = 0;
 	info->zero = 0;
+	info->dot = 0;
 	info->width = 0;
 	info->precision = 0;
 }

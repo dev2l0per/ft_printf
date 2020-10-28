@@ -24,7 +24,9 @@ void		print_string(t_info *info, va_list ap, char conversion)
 
 void		print_address(t_info *info, va_list ap, char conversion)
 {
-	
+	unsigned char	*addr;
+
+	addr = va_arg(ap, unsigned char *);
 }
 
 void		print_integer(t_info *info, va_list ap, char conversion)
@@ -34,5 +36,5 @@ void		print_integer(t_info *info, va_list ap, char conversion)
 
 void		print_hex(t_info *info, va_list ap, char conversion)
 {
-	
+	ft_putstr_fd(ft_itoa_base(va_arg(ap, int), 16), 1);
 }

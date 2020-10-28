@@ -28,9 +28,10 @@ typedef struct	s_info
 {
 	int			left_align;
 	int			zero;
+	int			dot;
 	int			width;
 	int			precision;
-}				t_info
+}				t_info;
 
 int				ft_printf(const char *format, ...);
 

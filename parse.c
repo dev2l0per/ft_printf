@@ -16,7 +16,7 @@ int			flag_parse(char *format, t_info *info, int *index, va_list ap)
 {
 	if (format[*index] == '-')
 		info->left_align = 1;
-	else if (format[*index] == '0')
+	else if (format[*index] == '0' && info->width == 0)
 	{
 		info->zero = 1;
 		(*index)++;
@@ -32,6 +32,7 @@ int			flag_parse(char *format, t_info *info, int *index, va_list ap)
 	else if (format[*index] == '.')
 	{
 		(*index)++;
+		info->dot = 1;
 		info->precision = ft_atoi(&format[*index]);
 		while (ft_isdigit(format[*index]))
 			(*index)++;
@@ -40,9 +41,18 @@ int			flag_parse(char *format, t_info *info, int *index, va_list ap)
 	{
 		if (info->width == 0)
 			info->width = va_arg(ap, int);
+		if (info->width < 0)
+		{
+			info->width = 0;
+		}
 		else
 			return (-1);
 	}
+	else
+	{
+		return (-1);
+	}
+	
 	return (0);
 }
 
@@ -83,13 +93,17 @@ int				format_parse(char *format, va_list ap)
 	{
 		if (format[index] && format[index] != '%')
 			ft_putchar_fd(format[index++], 1);
-		else if (format[index] && format[index] == '%')
+		else if (format[index] == '%' && format[index + 1])
 		{
+			init_info(&info);
 			index++;
 			while (!(ft_strchr(CONVERSION, format[index])))
-				flag_parse(format, &info, &index, ap);
+				if (flag_parse(format, &info, &index, ap))
+					return (-1);
 			if (ft_strchr(CONVERSION, format[index]))
 				conversion_parse(format, &info, &index, ap);
+			else
+				return (-1);
 		}
 	}
 	free(info);
