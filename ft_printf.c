@@ -19,6 +19,7 @@ void			init_info(t_info *info)
 	info->dot = 0;
 	info->width = 0;
 	info->precision = 0;
+	info->len = 0;
 }
 
 int				ft_printf(const char *format, ...)
@@ -29,5 +30,12 @@ int				ft_printf(const char *format, ...)
 	va_start(ap, format);
 	res = format_parse((char *)format, ap);
 	va_end(ap);
-	return (res)
+	return (res);
+}
+
+int main()
+{
+	// printf("[%d]\n", -123);
+	// ft_printf("[%d]", -123);
+	printf("%lu", sizeof(void *));
 }

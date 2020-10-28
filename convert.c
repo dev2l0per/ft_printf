@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-static size_t		num_len(int n, int base)
+static size_t		num_len(long long int n, int base)
 {
 	size_t			len;
 	long long int	nbr;
@@ -21,7 +21,7 @@ static size_t		num_len(int n, int base)
 	nbr = (long long int)n;
 	if (nbr < 0)
 	{
-		len++;
+		// len++;
 		nbr = nbr * -1;
 	}
 	while (nbr > 0)
@@ -32,7 +32,7 @@ static size_t		num_len(int n, int base)
 	return (len);
 }
 
-void		ft_itoa_base(int num, int base)
+char		*ft_itoa_base(long long int num, int base)
 {
 	size_t			len;
 	long long int	nbr;
@@ -49,8 +49,8 @@ void		ft_itoa_base(int num, int base)
 	if (!(res = (char *)malloc(sizeof(char) * (len + 1))))
 		return (NULL);
 	nbr = nbr * sign;
-	if (sign == -1)
-		res[start++] = '-';
+	// if (sign == -1)
+	// 	res[start++] = '-';
 	res[len--] = '\0';
 	while (nbr > 0)
 	{
