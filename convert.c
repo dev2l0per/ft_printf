@@ -12,13 +12,15 @@
 
 #include "ft_printf.h"
 
-static size_t		num_len(long long int n, int base)
+size_t		num_len(long long int n, int base)
 {
 	size_t			len;
 	long long int	nbr;
 
 	len = 0;
 	nbr = (long long int)n;
+	if (nbr == 0)
+		return (1);
 	if (nbr < 0)
 	{
 		// len++;
@@ -54,7 +56,35 @@ char		*ft_itoa_base(long long int num, int base)
 	res[len--] = '\0';
 	while (nbr > 0)
 	{
-		res[len--] = nbr % base + '0';
+		res[len--] = HEX_LOWER[nbr % base];
+		nbr = nbr / base;
+	}
+	return (res);
+}
+
+char		*ft_itoa_base_upper(long long int num, int base)
+{
+	size_t			len;
+	long long int	nbr;
+	char			*res;
+	int				sign;
+	unsigned int	start;
+
+	if (num == 0)
+		return (ft_strdup("0"));
+	start = 0;
+	len = num_len(num, base);
+	nbr = num;
+	sign = (nbr < 0 ? -1 : 1);
+	if (!(res = (char *)malloc(sizeof(char) * (len + 1))))
+		return (NULL);
+	nbr = nbr * sign;
+	// if (sign == -1)
+	// 	res[start++] = '-';
+	res[len--] = '\0';
+	while (nbr > 0)
+	{
+		res[len--] = HEX_UPPER[nbr % base];
 		nbr = nbr / base;
 	}
 	return (res);
