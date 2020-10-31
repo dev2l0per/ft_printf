@@ -12,16 +12,47 @@
 
 #include "ft_printf.h"
 
-int				flag_parse(char *format, t_info *info,
-size_t *index, va_list ap)
+int				star_parse(t_info *info, size_t *index, va_list ap)
 {
 	int			va;
 
-	if (format[*index] == '-')
+	(*index)++;
+	va = (int)va_arg(ap, int);
+	if (info->dot)
 	{
-		info->left_align = 1;
-		(*index)++;
+		info->precision = va;
+		info->zero = (info->precision > -1) ? 0 : info->zero;
 	}
+	else
+	{
+		if (va < 0)
+		{
+			info->left_align = 1;
+			info->width = va;
+		}
+		else if (info->width == 0)
+			info->width = va;
+	}
+	return (0);
+}
+
+int				precision_parse(char *format, t_info *info,
+size_t *index)
+{
+	(*index)++;
+	info->dot = 1;
+	info->precision = ft_atoi(&format[*index]);
+	info->zero = (format[*index] != '*') ? 0 : info->zero;
+	while (ft_isdigit(format[*index]))
+		(*index)++;
+	return (0);
+}
+
+int				flag_parse(char *format, t_info *info,
+size_t *index, va_list ap)
+{
+	if (format[*index] == '-' && (info->left_align = 1))
+		(*index)++;
 	else if (format[*index] == '0' && info->width == 0)
 	{
 		info->zero = 1;
@@ -33,36 +64,15 @@ size_t *index, va_list ap)
 	else if (format[*index] != '0' && ft_isdigit(format[*index]))
 	{
 		info->width = ft_atoi(&format[*index]);
-		(ft_isdigit(format[*index])) ? (*index)++ : 0;
+		while (ft_isdigit(format[*index]))
+			(*index)++;
 	}
 	else if (format[*index] == '.')
-	{
-		(*index)++;
-		info->dot = 1;
-		info->precision = ft_atoi(&format[*index]);
-		info->zero = (format[*index] != '*') ? 0 : info->zero;
-		(ft_isdigit(format[*index])) ? (*index)++ : 0;
-	}
+		precision_parse(format, info, index);
 	else if (format[*index] == '*')
-	{
-		(*index)++;
-		va = (int)va_arg(ap, int);
-		if (info->dot)
-		{
-			info->precision = va;
-			info->zero = (info->precision > -1) ? 0 : info->zero;
-		}
-		else
-		{
-			if (va < 0)
-			{
-				info->left_align = 1;
-				info->width = va;
-			}
-			else if (info->width == 0)
-				info->width = va;
-		}
-	}
+		star_parse(info, index, ap);
+	else
+		return (-1);
 	return (0);
 }
 
@@ -70,11 +80,11 @@ int				conversion_parse(char *format, t_info *info,
 size_t *index, va_list ap)
 {
 	if (format[*index] == 'c')
-		return (print_string(info, ap, 'c'));
+		return (print_cspercent(info, ap, 'c'));
 	else if (format[*index] == 's')
-		return (print_string(info, ap, 's'));
+		return (print_cspercent(info, ap, 's'));
 	else if (format[*index] == 'p')
-		return (print_address(info, ap, 'p'));
+		return (print_address(info, ap));
 	else if (format[*index] == 'd')
 		return (print_integer(info, ap, 'd'));
 	else if (format[*index] == 'i')
@@ -82,28 +92,14 @@ size_t *index, va_list ap)
 	else if (format[*index] == 'u')
 		return (print_integer(info, ap, 'u'));
 	else if (format[*index] == 'x')
-		return (print_hex_lower(info, ap, 'x'));
+		return (print_hex_lower(info, ap));
 	else if (format[*index] == 'X')
-		return (print_hex_upper(info, ap, 'X'));
+		return (print_hex_upper(info, ap));
 	else if (format[*index] == '%')
-		return (print_string(info, ap, '%'));
+		return (print_cspercent(info, ap, '%'));
 	else
 		return (-1);
 	return (0);
-}
-
-char			*ft_strchr_set(const char *s, char *set)
-{
-	int			index;
-
-	index = 0;
-	while (set[index])
-	{
-		if (ft_strchr(s, set[index]))
-			return (ft_strchr(s, set[index]));
-		index++;
-	}
-	return (NULL);
 }
 
 int				percent_parse(char *format, va_list ap,
@@ -121,29 +117,5 @@ t_info *info, size_t *index)
 			return (-1);
 	if (ft_strchr(CONVERSION, format[*index]))
 		res += conversion_parse(format, info, index, ap);
-	return (res);
-}
-
-int				format_parse(char *format, va_list ap)
-{
-	size_t		index;
-	t_info		*info;
-	int			res;
-
-	index = 0;
-	res = 0;
-	info = (t_info *)malloc(sizeof(t_info) * 1);
-	while (format[index])
-	{
-		if (format[index] && format[index] != '%')
-		{
-			ft_putchar_fd(format[index], 1);
-			res++;
-		}
-		else if (format[index] == '%' && format[index + 1])
-			res += percent_parse(format, ap, info, &index);
-		index++;
-	}
-	free(info);
 	return (res);
 }

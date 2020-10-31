@@ -12,6 +12,30 @@
 
 #include "ft_printf.h"
 
+int				format_parse(char *format, va_list ap)
+{
+	size_t		index;
+	t_info		*info;
+	int			res;
+
+	index = 0;
+	res = 0;
+	info = (t_info *)malloc(sizeof(t_info) * 1);
+	while (format[index])
+	{
+		if (format[index] && format[index] != '%')
+		{
+			ft_putchar_fd(format[index], 1);
+			res++;
+		}
+		else if (format[index] == '%' && format[index + 1])
+			res += percent_parse(format, ap, info, &index);
+		index++;
+	}
+	free(info);
+	return (res);
+}
+
 void			init_info(t_info *info)
 {
 	info->left_align = 0;

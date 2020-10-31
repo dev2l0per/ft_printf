@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   ft_strchr_set.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juyang <juyang@42student.co.kr>            +#+  +:+       +#+        */
+/*   By: juyang <juyang@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/10 20:58:10 by juyang            #+#    #+#             */
-/*   Updated: 2020/10/10 21:08:59 by juyang           ###   ########.fr       */
+/*   Created: 2020/10/31 17:17:11 by juyang            #+#    #+#             */
+/*   Updated: 2020/10/31 17:17:12 by juyang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_putstr_fd(char *s, int fd)
+char			*ft_strchr_set(const char *s, char *set)
 {
-	int		index;
+	int			index;
 
 	index = 0;
-	if (!s || fd < 0)
-		return (0);
-	while (s[index])
+	while (set[index])
 	{
-		write(fd, &s[index++], 1);
+		if (ft_strchr(s, set[index]))
+			return (ft_strchr(s, set[index]));
+		index++;
 	}
-	return (index);
+	return (NULL);
 }

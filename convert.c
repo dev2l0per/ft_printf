@@ -22,10 +22,7 @@ size_t		num_len(long long int n, int base)
 	if (nbr == 0)
 		return (1);
 	if (nbr < 0)
-	{
-		// len++;
 		nbr = nbr * -1;
-	}
 	while (nbr > 0)
 	{
 		len++;
@@ -51,8 +48,6 @@ char		*ft_itoa_base(long long int num, int base)
 	if (!(res = (char *)malloc(sizeof(char) * (len + 1))))
 		return (NULL);
 	nbr = nbr * sign;
-	// if (sign == -1)
-	// 	res[start++] = '-';
 	res[len--] = '\0';
 	while (nbr > 0)
 	{
@@ -79,8 +74,6 @@ char		*ft_itoa_base_upper(long long int num, int base)
 	if (!(res = (char *)malloc(sizeof(char) * (len + 1))))
 		return (NULL);
 	nbr = nbr * sign;
-	// if (sign == -1)
-	// 	res[start++] = '-';
 	res[len--] = '\0';
 	while (nbr > 0)
 	{
